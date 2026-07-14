@@ -1,0 +1,377 @@
+{
+  "currentPrediction": {
+    "level": "up",
+    "note": "반도체 업종 강세 및 미국 증시 상승 마감 영향",
+    "updatedAt": "2026-07-14T15:31:00",
+    "source": "manual"
+  },
+  "history": [
+    {
+      "id": "seed-001",
+      "date": "2026-07-13",
+      "predicted": "down",
+      "actual": "down",
+      "isHit": true
+    },
+    {
+      "id": "seed-002",
+      "date": "2026-07-10",
+      "predicted": "up",
+      "actual": "up",
+      "isHit": true
+    },
+    {
+      "id": "seed-003",
+      "date": "2026-07-09",
+      "predicted": "down",
+      "actual": "strong_down",
+      "isHit": false
+    },
+    {
+      "id": "seed-004",
+      "date": "2026-07-08",
+      "predicted": "strong_up",
+      "actual": "strong_up",
+      "isHit": true
+    },
+    {
+      "id": "seed-005",
+      "date": "2026-07-07",
+      "predicted": "strong_up",
+      "actual": "strong_up",
+      "isHit": true
+    },
+    {
+      "id": "seed-006",
+      "date": "2026-07-06",
+      "predicted": "flat",
+      "actual": "flat",
+      "isHit": true
+    },
+    {
+      "id": "seed-007",
+      "date": "2026-07-03",
+      "predicted": "up",
+      "actual": "up",
+      "isHit": true
+    },
+    {
+      "id": "seed-008",
+      "date": "2026-07-02",
+      "predicted": "flat",
+      "actual": "flat",
+      "isHit": true
+    },
+    {
+      "id": "seed-009",
+      "date": "2026-07-01",
+      "predicted": "flat",
+      "actual": "strong_up",
+      "isHit": false
+    },
+    {
+      "id": "seed-010",
+      "date": "2026-06-30",
+      "predicted": "down",
+      "actual": "up",
+      "isHit": false
+    },
+    {
+      "id": "seed-011",
+      "date": "2026-06-29",
+      "predicted": "up",
+      "actual": "up",
+      "isHit": true
+    },
+    {
+      "id": "seed-012",
+      "date": "2026-06-26",
+      "predicted": "strong_up",
+      "actual": "strong_up",
+      "isHit": true
+    },
+    {
+      "id": "seed-013",
+      "date": "2026-06-25",
+      "predicted": "down",
+      "actual": "down",
+      "isHit": true
+    },
+    {
+      "id": "seed-014",
+      "date": "2026-06-24",
+      "predicted": "down",
+      "actual": "flat",
+      "isHit": false
+    },
+    {
+      "id": "seed-015",
+      "date": "2026-06-23",
+      "predicted": "strong_down",
+      "actual": "strong_down",
+      "isHit": true
+    },
+    {
+      "id": "seed-016",
+      "date": "2026-06-22",
+      "predicted": "flat",
+      "actual": "down",
+      "isHit": false
+    },
+    {
+      "id": "seed-017",
+      "date": "2026-06-19",
+      "predicted": "strong_down",
+      "actual": "strong_down",
+      "isHit": true
+    },
+    {
+      "id": "seed-018",
+      "date": "2026-06-18",
+      "predicted": "down",
+      "actual": "down",
+      "isHit": true
+    },
+    {
+      "id": "seed-019",
+      "date": "2026-06-17",
+      "predicted": "up",
+      "actual": "up",
+      "isHit": true
+    },
+    {
+      "id": "seed-020",
+      "date": "2026-06-16",
+      "predicted": "strong_up",
+      "actual": "strong_up",
+      "isHit": true
+    },
+    {
+      "id": "seed-021",
+      "date": "2026-06-15",
+      "predicted": "strong_up",
+      "actual": "strong_up",
+      "isHit": true
+    },
+    {
+      "id": "seed-022",
+      "date": "2026-06-12",
+      "predicted": "down",
+      "actual": "down",
+      "isHit": true
+    },
+    {
+      "id": "seed-023",
+      "date": "2026-06-11",
+      "predicted": "up",
+      "actual": "up",
+      "isHit": true
+    },
+    {
+      "id": "seed-024",
+      "date": "2026-06-10",
+      "predicted": "up",
+      "actual": "down",
+      "isHit": false
+    },
+    {
+      "id": "seed-025",
+      "date": "2026-06-09",
+      "predicted": "down",
+      "actual": "down",
+      "isHit": true
+    },
+    {
+      "id": "seed-026",
+      "date": "2026-06-08",
+      "predicted": "down",
+      "actual": "down",
+      "isHit": true
+    },
+    {
+      "id": "seed-027",
+      "date": "2026-06-05",
+      "predicted": "up",
+      "actual": "down",
+      "isHit": false
+    },
+    {
+      "id": "seed-028",
+      "date": "2026-06-04",
+      "predicted": "flat",
+      "actual": "down",
+      "isHit": false
+    },
+    {
+      "id": "seed-029",
+      "date": "2026-06-03",
+      "predicted": "down",
+      "actual": "down",
+      "isHit": true
+    },
+    {
+      "id": "seed-030",
+      "date": "2026-06-02",
+      "predicted": "strong_up",
+      "actual": "strong_up",
+      "isHit": true
+    },
+    {
+      "id": "seed-031",
+      "date": "2026-06-01",
+      "predicted": "up",
+      "actual": "up",
+      "isHit": true
+    },
+    {
+      "id": "seed-032",
+      "date": "2026-05-29",
+      "predicted": "strong_down",
+      "actual": "up",
+      "isHit": false
+    },
+    {
+      "id": "seed-033",
+      "date": "2026-05-28",
+      "predicted": "down",
+      "actual": "down",
+      "isHit": true
+    },
+    {
+      "id": "seed-034",
+      "date": "2026-05-27",
+      "predicted": "strong_down",
+      "actual": "strong_down",
+      "isHit": true
+    },
+    {
+      "id": "seed-035",
+      "date": "2026-05-26",
+      "predicted": "up",
+      "actual": "up",
+      "isHit": true
+    },
+    {
+      "id": "seed-036",
+      "date": "2026-05-25",
+      "predicted": "flat",
+      "actual": "flat",
+      "isHit": true
+    },
+    {
+      "id": "seed-037",
+      "date": "2026-05-22",
+      "predicted": "flat",
+      "actual": "up",
+      "isHit": false
+    },
+    {
+      "id": "seed-038",
+      "date": "2026-05-21",
+      "predicted": "up",
+      "actual": "flat",
+      "isHit": false
+    },
+    {
+      "id": "seed-039",
+      "date": "2026-05-20",
+      "predicted": "strong_up",
+      "actual": "strong_up",
+      "isHit": true
+    },
+    {
+      "id": "seed-040",
+      "date": "2026-05-19",
+      "predicted": "strong_up",
+      "actual": "strong_up",
+      "isHit": true
+    },
+    {
+      "id": "seed-041",
+      "date": "2026-05-18",
+      "predicted": "down",
+      "actual": "down",
+      "isHit": true
+    },
+    {
+      "id": "seed-042",
+      "date": "2026-05-15",
+      "predicted": "strong_up",
+      "actual": "strong_up",
+      "isHit": true
+    },
+    {
+      "id": "seed-043",
+      "date": "2026-05-14",
+      "predicted": "strong_down",
+      "actual": "strong_down",
+      "isHit": true
+    },
+    {
+      "id": "seed-044",
+      "date": "2026-05-13",
+      "predicted": "strong_down",
+      "actual": "strong_up",
+      "isHit": false
+    },
+    {
+      "id": "seed-045",
+      "date": "2026-05-12",
+      "predicted": "down",
+      "actual": "flat",
+      "isHit": false
+    }
+  ],
+  "accuracy": {
+    "7": {
+      "period": 7,
+      "isManualOverride": false,
+      "updatedAt": "2026-07-14T07:36:01.410262",
+      "hitRate": 85.7,
+      "hitCount": 6,
+      "totalCount": 7
+    },
+    "30": {
+      "period": 30,
+      "isManualOverride": false,
+      "updatedAt": "2026-07-14T07:36:01.410362",
+      "hitRate": 73.3,
+      "hitCount": 22,
+      "totalCount": 30
+    },
+    "100": {
+      "period": 100,
+      "isManualOverride": false,
+      "updatedAt": "2026-07-14T07:36:01.410372",
+      "hitRate": 71.1,
+      "hitCount": 32,
+      "totalCount": 45
+    }
+  },
+  "ads": [
+    {
+      "id": "ad1",
+      "label": "메인 결과 아래",
+      "imageUrl": null,
+      "linkUrl": null,
+      "enabled": true,
+      "updatedAt": "2026-07-14T07:36:01.410378"
+    },
+    {
+      "id": "ad2",
+      "label": "적중률 아래",
+      "imageUrl": null,
+      "linkUrl": null,
+      "enabled": true,
+      "updatedAt": "2026-07-14T07:36:01.410380"
+    },
+    {
+      "id": "ad3",
+      "label": "페이지 하단",
+      "imageUrl": null,
+      "linkUrl": null,
+      "enabled": true,
+      "updatedAt": "2026-07-14T07:36:01.410381"
+    }
+  ]
+}
