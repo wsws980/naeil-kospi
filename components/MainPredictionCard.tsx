@@ -25,6 +25,13 @@ export default function MainPredictionCard({
       >
         내일 코스피 시가 예상
       </p>
+      <p
+        className="text-[11px] mb-3 max-w-[300px] leading-relaxed"
+        style={{ color: "var(--text-tertiary)" }}
+      >
+        다음 거래일 코스피 시가가 상승에서 출발할지 하락에서 출발할지를 예측하는
+        서비스이며, 장중 등락과는 무관합니다.
+      </p>
       <h1 id="main-prediction-heading" className="sr-only">
         다음 거래일 코스피 시가 예측: {meta.label}
       </h1>
