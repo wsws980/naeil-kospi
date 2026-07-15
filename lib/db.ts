@@ -1,6 +1,5 @@
 import "server-only";
-import fs from "fs/promises";
-import path from "path";
+import { createClient } from "@supabase/supabase-js";
 import { randomUUID } from "crypto";
 import {
   StoreSchema,
@@ -26,22 +25,22 @@ function predictedDirection(predicted: PredictionLevel): ActualResult | null {
 }
 
 /**
- * 데이터 저장소
+ * 데이터 저장소 (Supabase Postgres)
  * ------------------------------------------------------------------
- * 지금은 JSON 파일 기반으로 동작합니다 (별도 DB 세팅 없이 바로 운영 가능).
+ * 전체 상태(StoreSchema)를 app_store 테이블의 단일 행(id=1)에 JSONB로 저장합니다.
+ * 재배포해도 데이터가 사라지지 않습니다 (Railway 서버가 아니라 Supabase에 저장되므로).
  *
- * 중요: 재배포해도 데이터가 초기화되지 않으려면 이 파일을
- * "영구 저장 공간(Railway Volume 등)"에 둬야 합니다. DATA_DIR 환경변수로
- * 저장 위치를 바꿀 수 있게 만들어뒀습니다 (기본값은 프로젝트 안의 data 폴더).
- * 파일이 없으면 아래 DEFAULT_STORE로 자동 생성합니다.
- *
- * 트래픽이 늘어나거나 서버리스(Vercel Edge 등) 환경에 배포할 경우,
- * 이 파일의 함수 시그니처만 유지한 채 내부 구현을 Postgres/Supabase 등으로
- * 교체하면 나머지 코드(컴포넌트, API 라우트)는 수정할 필요가 없습니다.
+ * 필요한 환경변수: SUPABASE_URL, SUPABASE_SECRET_KEY
+ * (Supabase 대시보드 → Settings → API 에서 확인. secret 키는 서버 전용이며
+ *  이 파일은 "server-only"이므로 브라우저로는 절대 노출되지 않습니다.)
  */
 
-const DATA_DIR = process.env.DATA_DIR || path.join(process.cwd(), "data");
-const DATA_PATH = path.join(DATA_DIR, "store.json");
+const supabase = createClient(
+  process.env.SUPABASE_URL || "https://placeholder.supabase.co",
+  process.env.SUPABASE_SECRET_KEY || "placeholder-key"
+);
+
+const STORE_ROW_ID = 1;
 
 const DEFAULT_STORE: StoreSchema = {
   currentPrediction: {
@@ -62,29 +61,34 @@ const DEFAULT_STORE: StoreSchema = {
   ],
 };
 
-let writeQueue: Promise<unknown> = Promise.resolve();
-
-async function ensureStoreFile(): Promise<void> {
-  try {
-    await fs.access(DATA_PATH);
-  } catch {
-    await fs.mkdir(DATA_DIR, { recursive: true });
-    await fs.writeFile(DATA_PATH, JSON.stringify(DEFAULT_STORE, null, 2), "utf-8");
-  }
-}
-
 async function readStore(): Promise<StoreSchema> {
-  await ensureStoreFile();
-  const raw = await fs.readFile(DATA_PATH, "utf-8");
-  return JSON.parse(raw) as StoreSchema;
+  const { data, error } = await supabase
+    .from("app_store")
+    .select("data")
+    .eq("id", STORE_ROW_ID)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`Supabase 조회 실패: ${error.message}`);
+  }
+
+  if (!data) {
+    // 최초 실행: 기본값으로 행을 하나 만들어둡니다.
+    await supabase.from("app_store").insert({ id: STORE_ROW_ID, data: DEFAULT_STORE });
+    return DEFAULT_STORE;
+  }
+
+  return data.data as StoreSchema;
 }
 
 async function writeStore(store: StoreSchema): Promise<void> {
-  // 동시 쓰기로 인한 파일 손상을 막기 위해 순차 실행 큐를 사용
-  writeQueue = writeQueue.then(() =>
-    fs.writeFile(DATA_PATH, JSON.stringify(store, null, 2), "utf-8")
-  );
-  await writeQueue;
+  const { error } = await supabase
+    .from("app_store")
+    .upsert({ id: STORE_ROW_ID, data: store, updated_at: new Date().toISOString() });
+
+  if (error) {
+    throw new Error(`Supabase 저장 실패: ${error.message}`);
+  }
 }
 
 // ---------------------------------------------------------------------------
