@@ -9,7 +9,7 @@ export default function ComingSoonGrid() {
           className="text-[15px] font-semibold"
           style={{ color: "var(--text-primary)" }}
         >
-          곧 추가될 예측
+          곧 추가될 서비스
         </h2>
         <span
           className="text-[11px] px-2 py-0.5 rounded-full font-medium"

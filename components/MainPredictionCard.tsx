@@ -29,8 +29,9 @@ export default function MainPredictionCard({
         className="text-[11px] mb-3 max-w-[300px] leading-relaxed"
         style={{ color: "var(--text-tertiary)" }}
       >
-        다음 거래일 코스피 시가가 상승에서 출발할지 하락에서 출발할지를 예측하는
-        서비스이며, 장중 등락과는 무관합니다.
+        다음 거래일 코스피 시가가 상승에서 출발할지 하락에서 출발할지를
+        <br />
+        예측하는 서비스이며, 장중 등락과는 무관합니다.
       </p>
       <h1 id="main-prediction-heading" className="sr-only">
         다음 거래일 코스피 시가 예측: {meta.label}
@@ -41,7 +42,7 @@ export default function MainPredictionCard({
       </div>
 
       <div className="flex items-center gap-2.5 mt-1">
-        <span className="text-[40px] leading-none" aria-hidden="true">
+        <span className="text-[40px] leading-none" aria-hidden="true" style={{ color: meta.textColor }}>
           {meta.emoji}
         </span>
         <span
