@@ -3,21 +3,31 @@
  * 예측 알고리즘이 나중에 연결되더라도 이 타입들은 그대로 재사용됩니다.
  */
 
-/** 다음 거래일 코스피 "시가" 예측 5단계 */
-export type PredictionLevel =
-  | "strong_up" // 🚀 강한 상승
-  | "up" // 🟢 상승
-  | "flat" // 🟡 보합
-  | "down" // 🔴 하락
-  | "strong_down"; // ⬇️ 강한 하락
+/** 다음 거래일 코스피 "시가" 예측 5단계
+ *  상승 / 보합(상승) / 예측패스 / 보합(하락) / 하락
+ *  - "up_mild"(보합-상승)와 "up"은 둘 다 "상승" 방향에 베팅한 것으로 취급되고,
+ *    "down_mild"(보합-하락)와 "down"은 둘 다 "하락" 방향에 베팅한 것으로 취급됩니다.
+ *  - "pass"는 방향성 판단이 애매할 때 예측 자체를 보류(패스)하는 상태로,
+ *    적중률 집계에서 완전히 제외됩니다.
+ */
+export type PredictionLevel = "up" | "up_mild" | "pass" | "down_mild" | "down";
 
 export const PREDICTION_LEVELS: PredictionLevel[] = [
-  "strong_up",
   "up",
-  "flat",
+  "up_mild",
+  "pass",
+  "down_mild",
   "down",
-  "strong_down",
 ];
+
+/**
+ * 실제 시장 결과는 "다음 거래일 시가가 전일 종가 대비 플러스였는지 마이너스였는지"
+ * 딱 둘로만 판정합니다 (0% 이상 = up, 마이너스 = down). "보합"이나 "패스"는
+ * 실제 결과로 존재할 수 없습니다.
+ */
+export type ActualResult = "up" | "down";
+
+export const ACTUAL_RESULTS: ActualResult[] = ["up", "down"];
 
 /** 현재 메인 화면에 노출되는 "내일 시가 예측" */
 export interface CurrentPrediction {
@@ -37,7 +47,8 @@ export interface HistoryEntry {
   date: string;
   predicted: PredictionLevel;
   /** 실제 결과는 장 시작 후 입력되므로 없을 수도 있음 */
-  actual: PredictionLevel | null;
+  /** 실제 시장 결과는 상승/하락 둘 중 하나로만 판정 (보합·패스는 없음) */
+  actual: ActualResult | null;
   /** 적중 여부 — actual이 없으면 null */
   isHit: boolean | null;
 }

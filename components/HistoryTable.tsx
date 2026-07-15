@@ -90,7 +90,15 @@ export default function HistoryTable({ history }: { history: HistoryEntry[] }) {
                       )}
                     </td>
                     <td className="px-3.5 py-2.5 text-center">
-                      {h.isHit === null ? (
+                      {h.predicted === "pass" ? (
+                        <span
+                          className="text-[11px]"
+                          style={{ color: "var(--text-tertiary)" }}
+                          title="관망 건은 적중률 집계에서 제외됩니다"
+                        >
+                          제외
+                        </span>
+                      ) : h.isHit === null ? (
                         <span style={{ color: "var(--text-tertiary)" }}>–</span>
                       ) : h.isHit ? (
                         <span style={{ color: "var(--level-up)" }} aria-label="적중">

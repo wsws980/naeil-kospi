@@ -6,7 +6,7 @@ import {
   recomputeAccuracyStats,
 } from "@/lib/db";
 import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/auth";
-import { PREDICTION_LEVELS, PredictionLevel } from "@/lib/types";
+import { PREDICTION_LEVELS, PredictionLevel, ACTUAL_RESULTS, ActualResult } from "@/lib/types";
 
 export async function GET(request: NextRequest) {
   const limitParam = request.nextUrl.searchParams.get("limit");
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
   const date = body?.date as string | undefined;
   const predicted = body?.predicted as PredictionLevel | undefined;
-  const actual = (body?.actual ?? null) as PredictionLevel | null;
+  const actual = (body?.actual ?? null) as ActualResult | null;
 
   if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
     return NextResponse.json(
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
       { status: 400 }
     );
   }
-  if (actual !== null && !PREDICTION_LEVELS.includes(actual)) {
+  if (actual !== null && !ACTUAL_RESULTS.includes(actual)) {
     return NextResponse.json(
       { error: "실제 결과 값이 올바르지 않습니다." },
       { status: 400 }

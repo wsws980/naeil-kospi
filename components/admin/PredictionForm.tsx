@@ -46,6 +46,9 @@ export default function PredictionForm({ initial }: { initial: CurrentPrediction
       </p>
 
       <LevelSelect value={level} onChange={setLevel} name="내일 시가 예측" />
+      <p className="text-[11px] mt-1.5" style={{ color: "var(--text-tertiary)" }}>
+        &ldquo;관망&rdquo;을 선택하면 적중률 집계에서 제외됩니다.
+      </p>
 
       <div className="mt-4">
         <label htmlFor="note" className="text-[13px] font-medium block mb-1.5">

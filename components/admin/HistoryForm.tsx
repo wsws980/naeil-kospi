@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { HistoryEntry, PredictionLevel } from "@/lib/types";
+import { HistoryEntry, PredictionLevel, ActualResult } from "@/lib/types";
 import LevelSelect from "./LevelSelect";
 import SaveStatus from "./SaveStatus";
 import { LEVEL_META } from "@/lib/constants";
@@ -14,8 +14,8 @@ function todayKST(): string {
 export default function HistoryForm({ initial }: { initial: HistoryEntry[] }) {
   const [history, setHistory] = useState(initial);
   const [date, setDate] = useState(todayKST());
-  const [predicted, setPredicted] = useState<PredictionLevel>("flat");
-  const [actual, setActual] = useState<PredictionLevel | null>(null);
+  const [predicted, setPredicted] = useState<PredictionLevel>("pass");
+  const [actual, setActual] = useState<ActualResult | null>(null);
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<{ type: "idle" | "success" | "error"; message?: string }>({
     type: "idle",
@@ -80,6 +80,9 @@ export default function HistoryForm({ initial }: { initial: HistoryEntry[] }) {
         <div>
           <p className="text-[13px] font-medium mb-1.5">예측</p>
           <LevelSelect value={predicted} onChange={setPredicted} name="예측" />
+          <p className="text-[11px] mt-1.5" style={{ color: "var(--text-tertiary)" }}>
+            &ldquo;관망&rdquo;을 선택하면 적중률 집계에서 제외됩니다.
+          </p>
         </div>
 
         <div>
@@ -95,7 +98,15 @@ export default function HistoryForm({ initial }: { initial: HistoryEntry[] }) {
               </button>
             )}
           </div>
-          <LevelSelect value={actual} onChange={setActual} name="실제 결과" />
+          <LevelSelect
+            value={actual}
+            onChange={(level) => setActual(level as ActualResult)}
+            name="실제 결과"
+            excludeLevels={["pass", "up_mild", "down_mild"]}
+          />
+          <p className="text-[11px] mt-1.5" style={{ color: "var(--text-tertiary)" }}>
+            실제 결과는 시가 등락 방향(상승/하락)만 기록합니다.
+          </p>
         </div>
 
         <button

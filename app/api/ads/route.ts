@@ -6,7 +6,7 @@ import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/auth";
 import { AdSlotData } from "@/lib/types";
 
 const VALID_IDS: AdSlotData["id"][] = ["ad1", "ad2", "ad3"];
-const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
+const UPLOAD_DIR = process.env.UPLOADS_DIR || path.join(process.cwd(), "public", "uploads");
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/webp", "image/gif"];
 

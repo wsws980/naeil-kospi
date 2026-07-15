@@ -7,14 +7,21 @@ export default function LevelSelect({
   value,
   onChange,
   name,
+  excludeLevels = [],
 }: {
   value: PredictionLevel | null;
   onChange: (level: PredictionLevel) => void;
   name?: string;
+  /** 예: 실제 결과 선택에서는 "예측 패스"를 고를 수 없으므로 제외 */
+  excludeLevels?: PredictionLevel[];
 }) {
+  const options = [...GAUGE_ORDER]
+    .reverse()
+    .filter((level) => !excludeLevels.includes(level));
+
   return (
-    <div className="grid grid-cols-5 gap-1.5" role="radiogroup" aria-label={name}>
-      {[...GAUGE_ORDER].reverse().map((level) => {
+    <div className="grid gap-1.5" style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }} role="radiogroup" aria-label={name}>
+      {options.map((level) => {
         const meta = LEVEL_META[level];
         const active = value === level;
         return (
