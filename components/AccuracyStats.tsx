@@ -53,6 +53,14 @@ export default function AccuracyStats({
               >
                 {stat ? `${stat.hitCount}/${stat.totalCount}회` : "데이터 없음"}
               </span>
+              {stat && stat.upFailCount > 0 && (
+                <span
+                  className="text-[10px] mt-1 px-1.5 py-0.5 rounded-full"
+                  style={{ background: "var(--level-strong-down-bg)", color: "var(--level-strong-down)" }}
+                >
+                  상승예측실패 {stat.upFailCount}건
+                </span>
+              )}
             </div>
           );
         })}

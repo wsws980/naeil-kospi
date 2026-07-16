@@ -3,6 +3,7 @@ import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageToggle from "@/components/PageToggle";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://naeil-kospi.example.com"),
@@ -64,6 +65,9 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col">
         <Header />
+        <div className="max-w-[560px] mx-auto px-4 pt-4 flex justify-center">
+          <PageToggle />
+        </div>
         <main className="flex-1 w-full">{children}</main>
         <Footer />
       </body>

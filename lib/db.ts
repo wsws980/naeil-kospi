@@ -10,6 +10,8 @@ import {
   AdSlotData,
   PredictionLevel,
   ActualResult,
+  MarketResponse,
+  Direction,
 } from "./types";
 
 /**
@@ -22,6 +24,34 @@ function predictedDirection(predicted: PredictionLevel): ActualResult | null {
   if (predicted === "up" || predicted === "up_mild") return "up";
   if (predicted === "down" || predicted === "down_mild") return "down";
   return null;
+}
+
+/** 오늘 날짜(KST, YYYY-MM-DD) */
+function todayKST(): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Seoul" }).format(new Date());
+}
+
+/** date 문자열(YYYY-MM-DD)에서 days만큼 뺀 날짜 문자열 */
+function subtractDays(dateStr: string, days: number): string {
+  const d = new Date(`${dateStr}T00:00:00+09:00`);
+  d.setDate(d.getDate() - days);
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Seoul" }).format(d);
+}
+
+/**
+ * "상승예측실패" 건수 계산: 상승/강한상승을 예측했는데 실제 결과가 하락이었던 건.
+ * hitRate와 달리 "최근 N건"이 아니라 "오늘 기준 최근 N일(달력)" 범위로 계산합니다.
+ * 즉 날짜가 지나면 자동으로 카운팅에서 빠집니다.
+ */
+function computeUpFailCount(history: HistoryEntry[], period: AccuracyPeriod): number {
+  const today = todayKST();
+  const cutoff = subtractDays(today, period);
+  return history.filter((h) => {
+    if (h.actual === null) return false;
+    if (predictedDirection(h.predicted) !== "up") return false;
+    if (h.actual !== "down") return false;
+    return h.date > cutoff && h.date <= today;
+  }).length;
 }
 
 /**
@@ -50,16 +80,37 @@ const DEFAULT_STORE: StoreSchema = {
   },
   history: [],
   accuracy: {
-    7: { period: 7, hitRate: 0, hitCount: 0, totalCount: 0, isManualOverride: false, updatedAt: new Date().toISOString() },
-    30: { period: 30, hitRate: 0, hitCount: 0, totalCount: 0, isManualOverride: false, updatedAt: new Date().toISOString() },
-    100: { period: 100, hitRate: 0, hitCount: 0, totalCount: 0, isManualOverride: false, updatedAt: new Date().toISOString() },
+    7: { period: 7, hitRate: 0, hitCount: 0, totalCount: 0, upFailCount: 0, isManualOverride: false, updatedAt: new Date().toISOString() },
+    30: { period: 30, hitRate: 0, hitCount: 0, totalCount: 0, upFailCount: 0, isManualOverride: false, updatedAt: new Date().toISOString() },
+    100: { period: 100, hitRate: 0, hitCount: 0, totalCount: 0, upFailCount: 0, isManualOverride: false, updatedAt: new Date().toISOString() },
   },
   ads: [
     { id: "ad1", label: "메인 결과 아래", imageUrl: null, linkUrl: null, enabled: true, updatedAt: new Date().toISOString() },
     { id: "ad2", label: "적중률 아래", imageUrl: null, linkUrl: null, enabled: true, updatedAt: new Date().toISOString() },
     { id: "ad3", label: "페이지 하단", imageUrl: null, linkUrl: null, enabled: true, updatedAt: new Date().toISOString() },
   ],
+  marketResponse: {
+    nasdaq: { date: new Date().toISOString().slice(0, 10), direction: "up" },
+    kospiNightFutures: { date: new Date().toISOString().slice(0, 10), direction: "up" },
+    responsePlan: "",
+    updatedAt: new Date().toISOString(),
+  },
 };
+
+/** 예전 스키마로 저장된 데이터를 읽을 때, 나중에 추가된 필드가 없어서 죽지 않도록 기본값을 채워줍니다. */
+function normalizeStore(raw: Partial<StoreSchema>): StoreSchema {
+  const accuracy = { ...DEFAULT_STORE.accuracy, ...(raw.accuracy || {}) };
+  for (const period of [7, 30, 100] as AccuracyPeriod[]) {
+    accuracy[period] = { ...DEFAULT_STORE.accuracy[period], ...(accuracy[period] || {}) };
+  }
+  return {
+    currentPrediction: raw.currentPrediction ?? DEFAULT_STORE.currentPrediction,
+    history: raw.history ?? DEFAULT_STORE.history,
+    accuracy,
+    ads: raw.ads ?? DEFAULT_STORE.ads,
+    marketResponse: raw.marketResponse ?? DEFAULT_STORE.marketResponse,
+  };
+}
 
 async function readStore(): Promise<StoreSchema> {
   const { data, error } = await supabase
@@ -78,7 +129,7 @@ async function readStore(): Promise<StoreSchema> {
     return DEFAULT_STORE;
   }
 
-  return data.data as StoreSchema;
+  return normalizeStore(data.data as Partial<StoreSchema>);
 }
 
 async function writeStore(store: StoreSchema): Promise<void> {
@@ -181,7 +232,7 @@ export async function getAccuracyStats(): Promise<Record<AccuracyPeriod, Accurac
   return store.accuracy;
 }
 
-/** 관리자가 수동으로 적중률 값을 덮어쓸 때 */
+/** 관리자가 수동으로 적중률 값을 덮어쓸 때 (상승예측실패는 항상 자동 계산이라 그대로 유지) */
 export async function setAccuracyStat(
   period: AccuracyPeriod,
   hitRate: number,
@@ -189,11 +240,13 @@ export async function setAccuracyStat(
   totalCount: number
 ): Promise<AccuracyStat> {
   const store = await readStore();
+  const upFailCount = computeUpFailCount(store.history, period);
   const stat: AccuracyStat = {
     period,
     hitRate,
     hitCount,
     totalCount,
+    upFailCount,
     isManualOverride: true,
     updatedAt: new Date().toISOString(),
   };
@@ -202,7 +255,7 @@ export async function setAccuracyStat(
   return stat;
 }
 
-/** 히스토리 데이터로부터 3개 기간 적중률을 다시 자동 계산해 저장 */
+/** 히스토리 데이터로부터 3개 기간 적중률 + 상승예측실패를 다시 계산해 저장 */
 export async function recomputeAccuracyStats(): Promise<Record<AccuracyPeriod, AccuracyStat>> {
   const store = await readStore();
   const periods: AccuracyPeriod[] = [7, 30, 100];
@@ -211,11 +264,13 @@ export async function recomputeAccuracyStats(): Promise<Record<AccuracyPeriod, A
       store.history,
       period
     );
+    const upFailCount = computeUpFailCount(store.history, period);
     store.accuracy[period] = {
       period,
       hitRate,
       hitCount,
       totalCount,
+      upFailCount,
       isManualOverride: false,
       updatedAt: new Date().toISOString(),
     };
@@ -247,4 +302,32 @@ export async function updateAd(
   };
   await writeStore(store);
   return store.ads[idx];
+}
+
+// ---------------------------------------------------------------------------
+// 대응 (나스닥 / 코스피 야간선물 + 아침 대응 계획)
+// ---------------------------------------------------------------------------
+
+export async function getMarketResponse(): Promise<MarketResponse> {
+  const store = await readStore();
+  return store.marketResponse;
+}
+
+export async function setMarketResponse(input: {
+  nasdaqDate: string;
+  nasdaqDirection: Direction;
+  kospiNightDate: string;
+  kospiNightDirection: Direction;
+  responsePlan: string;
+}): Promise<MarketResponse> {
+  const store = await readStore();
+  const updated: MarketResponse = {
+    nasdaq: { date: input.nasdaqDate, direction: input.nasdaqDirection },
+    kospiNightFutures: { date: input.kospiNightDate, direction: input.kospiNightDirection },
+    responsePlan: input.responsePlan,
+    updatedAt: new Date().toISOString(),
+  };
+  store.marketResponse = updated;
+  await writeStore(store);
+  return updated;
 }

@@ -121,6 +121,13 @@ export default function AccuracyForm({
               <span className="text-[13px] tabular-nums w-14" style={{ color: "var(--text-secondary)" }}>
                 {stat.hitRate.toFixed(1)}%
               </span>
+              <span
+                className="text-[11px] px-1.5 py-0.5 rounded-full shrink-0"
+                style={{ background: "var(--level-strong-down-bg)", color: "var(--level-strong-down)" }}
+                title="상승/강한상승 예측인데 실제 하락이었던 건수 (날짜 기준 자동 계산, 수동 수정 불가)"
+              >
+                상승예측실패 {stat.upFailCount}건
+              </span>
               <button
                 onClick={() => handleSave(period)}
                 disabled={savingPeriod === period}

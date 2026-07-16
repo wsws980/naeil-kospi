@@ -1,15 +1,16 @@
-import { getCurrentPrediction, getAccuracyStats, getHistory, getAds } from "@/lib/db";
+import { getCurrentPrediction, getAccuracyStats, getHistory, getAds, getMarketResponse } from "@/lib/db";
 import DashboardShell from "@/components/admin/DashboardShell";
 import LogoutButton from "@/components/admin/LogoutButton";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboardPage() {
-  const [prediction, accuracy, history, ads] = await Promise.all([
+  const [prediction, accuracy, history, ads, marketResponse] = await Promise.all([
     getCurrentPrediction(),
     getAccuracyStats(),
     getHistory(),
     getAds(),
+    getMarketResponse(),
   ]);
 
   return (
@@ -25,6 +26,7 @@ export default async function AdminDashboardPage() {
         accuracy={accuracy}
         history={history}
         ads={ads}
+        marketResponse={marketResponse}
       />
     </div>
   );

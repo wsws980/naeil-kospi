@@ -60,6 +60,12 @@ export interface AccuracyStat {
   hitRate: number; // 0~100
   hitCount: number;
   totalCount: number;
+  /**
+   * 상승/강한상승 예측인데 실제 결과가 하락이었던 건수.
+   * hitRate/hitCount와 달리 "최근 N건"이 아니라 "오늘 기준 최근 N일(달력)"
+   * 범위로 계산됩니다 — 날짜가 지나면 자동으로 집계에서 빠집니다.
+   */
+  upFailCount: number;
   /** true면 관리자가 수동으로 값을 덮어쓴 것, false면 히스토리에서 자동 계산 */
   isManualOverride: boolean;
   updatedAt: string;
@@ -81,10 +87,30 @@ export interface ComingSoonItem {
   emoji: string;
 }
 
+/** 상승/하락 방향 (나스닥, 코스피 야간선물 등 지표용) */
+export type Direction = "up" | "down";
+
+/** 지표 1개 판독값 (날짜 + 방향). 지금은 수기 입력, 나중에 자동 연동 대비 */
+export interface IndexReading {
+  /** 해당 지표 기준 날짜 (YYYY-MM-DD) */
+  date: string;
+  direction: Direction;
+}
+
+/** "대응" 페이지 — 아침 대응 전 매매 계획 + 참고 지표 */
+export interface MarketResponse {
+  nasdaq: IndexReading;
+  kospiNightFutures: IndexReading;
+  /** 오늘 아침 대응 전 계획 메모 */
+  responsePlan: string;
+  updatedAt: string;
+}
+
 /** 전체 저장소 스키마 (JSON 파일 1개로 관리) */
 export interface StoreSchema {
   currentPrediction: CurrentPrediction;
   history: HistoryEntry[];
   accuracy: Record<AccuracyPeriod, AccuracyStat>;
   ads: AdSlotData[];
+  marketResponse: MarketResponse;
 }

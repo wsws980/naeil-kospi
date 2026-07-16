@@ -1,4 +1,4 @@
-import { PredictionLevel, ActualResult, ComingSoonItem } from "./types";
+import { PredictionLevel, ActualResult, ComingSoonItem, Direction } from "./types";
 
 export interface LevelMeta {
   level: PredictionLevel;
@@ -79,11 +79,14 @@ export const ACTUAL_META: Record<ActualResult, LevelMeta> = {
 };
 
 export const COMING_SOON_ITEMS: ComingSoonItem[] = [
-  { id: "kosdaq", label: "코스닥", emoji: "📊" },
   { id: "nasdaq", label: "나스닥", emoji: "💻" },
-  { id: "sp500", label: "S&P500", emoji: "🇺🇸" },
   { id: "usdkrw", label: "달러/원", emoji: "💱" },
   { id: "us_futures", label: "미국 선물", emoji: "📈" },
-  { id: "vix", label: "VIX", emoji: "⚡" },
   { id: "econ_calendar", label: "경제 일정", emoji: "🗓️" },
 ];
+
+/** 방향(상승/하락) 표시용 메타데이터 — "대응" 페이지의 나스닥/코스피 야간선물 등에 사용 */
+export const DIRECTION_META: Record<Direction, { emoji: string; label: string; color: string }> = {
+  up: { emoji: "↑", label: "상승", color: "var(--level-strong-up)" },
+  down: { emoji: "↓", label: "하락", color: "var(--level-strong-down)" },
+};
