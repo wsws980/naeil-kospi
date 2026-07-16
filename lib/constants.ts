@@ -1,4 +1,4 @@
-import { PredictionLevel, ComingSoonItem } from "./types";
+import { PredictionLevel, ActualResult, ComingSoonItem } from "./types";
 
 export interface LevelMeta {
   level: PredictionLevel;
@@ -68,6 +68,15 @@ export const LEVEL_META: Record<PredictionLevel, LevelMeta> = {
 
 /** 게이지에서 왼쪽(하락)→오른쪽(상승) 순서 */
 export const GAUGE_ORDER: PredictionLevel[] = ["down", "down_mild", "pass", "up_mild", "up"];
+
+/**
+ * "실제 결과"는 상승/하락 2가지뿐이라 예측용 5단계 라벨(강한상승/강한하락 등)을
+ * 그대로 쓰면 어색합니다. up_mild/down_mild의 라벨("상승"/"하락")을 재사용합니다.
+ */
+export const ACTUAL_META: Record<ActualResult, LevelMeta> = {
+  up: LEVEL_META.up_mild,
+  down: LEVEL_META.down_mild,
+};
 
 export const COMING_SOON_ITEMS: ComingSoonItem[] = [
   { id: "kosdaq", label: "코스닥", emoji: "📊" },

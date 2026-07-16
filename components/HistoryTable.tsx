@@ -1,9 +1,8 @@
 import { HistoryEntry } from "@/lib/types";
-import { LEVEL_META } from "@/lib/constants";
+import { LEVEL_META, ACTUAL_META, LevelMeta } from "@/lib/constants";
 import { formatDate } from "@/lib/format";
 
-function LevelBadge({ level }: { level: HistoryEntry["predicted"] }) {
-  const meta = LEVEL_META[level];
+function LevelBadge({ meta }: { meta: LevelMeta }) {
   return (
     <span
       className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[12px] font-medium whitespace-nowrap"
@@ -80,11 +79,11 @@ export default function HistoryTable({ history }: { history: HistoryEntry[] }) {
                       {formatDate(h.date)}
                     </td>
                     <td className="px-3.5 py-2.5">
-                      <LevelBadge level={h.predicted} />
+                      <LevelBadge meta={LEVEL_META[h.predicted]} />
                     </td>
                     <td className="px-3.5 py-2.5">
                       {h.actual ? (
-                        <LevelBadge level={h.actual} />
+                        <LevelBadge meta={ACTUAL_META[h.actual]} />
                       ) : (
                         <span style={{ color: "var(--text-tertiary)" }}>대기중</span>
                       )}

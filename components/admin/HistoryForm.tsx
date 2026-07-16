@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { HistoryEntry, PredictionLevel, ActualResult } from "@/lib/types";
 import LevelSelect from "./LevelSelect";
+import ActualResultSelect from "./ActualResultSelect";
 import SaveStatus from "./SaveStatus";
-import { LEVEL_META } from "@/lib/constants";
+import { LEVEL_META, ACTUAL_META } from "@/lib/constants";
 import { formatDate } from "@/lib/format";
 
 function todayKST(): string {
@@ -98,12 +99,7 @@ export default function HistoryForm({ initial }: { initial: HistoryEntry[] }) {
               </button>
             )}
           </div>
-          <LevelSelect
-            value={actual}
-            onChange={(level) => setActual(level as ActualResult)}
-            name="실제 결과"
-            excludeLevels={["pass", "up_mild", "down_mild"]}
-          />
+          <ActualResultSelect value={actual} onChange={setActual} name="실제 결과" />
           <p className="text-[11px] mt-1.5" style={{ color: "var(--text-tertiary)" }}>
             실제 결과는 시가 등락 방향(상승/하락)만 기록합니다.
           </p>
@@ -136,7 +132,7 @@ export default function HistoryForm({ initial }: { initial: HistoryEntry[] }) {
               </span>
               <span>{LEVEL_META[h.predicted].emoji}</span>
               <span style={{ color: "var(--text-tertiary)" }}>→</span>
-              <span>{h.actual ? LEVEL_META[h.actual].emoji : "대기중"}</span>
+              <span>{h.actual ? ACTUAL_META[h.actual].emoji : "대기중"}</span>
               <button
                 onClick={() => handleDelete(h.id)}
                 className="ml-auto text-[11px] px-2 py-1 rounded-full"
